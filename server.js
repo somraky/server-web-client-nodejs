@@ -2,18 +2,23 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var path = require('path');
-var httpPort = process.env.httpPort || 3000;
+var config = require('./config');
+var httpPort = process.env.httpPort || 3001;
 
 var app = express();
 
-var loginService = require('../service-api/service')
-
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
+//app.use(requireHTTPS);
 app.use(express.static(path.join(__dirname, 'views')));
-loginService(app);
+
+app.get('/*', function(req, res){
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
 
 if (require.main === module) {
   app.listen(httpPort, function() {
